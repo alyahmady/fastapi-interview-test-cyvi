@@ -1,8 +1,6 @@
 import datetime
 
-from package.db import engine
 from sqlalchemy import (
-    Sequence,
     String,
     DateTime,
     func,
@@ -21,25 +19,11 @@ class Base(AsyncAttrs, DeclarativeBase):
     pass
 
 
-async def init_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-UserPrimaryKeySequence = Sequence(
-    "user_manager_user_id_sequence", start=1000000, increment=1
-)
-
-
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(
-        BigInteger,
-        UserPrimaryKeySequence,
-        server_default=UserPrimaryKeySequence.next_value(),
-        primary_key=True,
-    )
+    id: Mapped[str] = mapped_column(BigInteger, primary_key=True)
+
     email: Mapped[str] = mapped_column(
         String(256), index=True, nullable=False, unique=True
     )
