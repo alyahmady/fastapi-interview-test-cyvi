@@ -20,6 +20,13 @@ class Config:
     # refresh_token_expiration_day = int(os.getenv("REFRESH_TOKEN_EXPIRATION_DAY", 7))
 
     time_zone = os.getenv("TIME_ZONE", "UTC")
+    auth_secret_key = os.getenv("AUTH_SECRET_KEY")
+
+    cookie_auth_key = "jwtauth"
+    cookie_auth_max_age = 60 * 60 * 24 * 7  # 7 days
+    cookie_auth_secure = True
+    cookie_auth_httponly = True
+    cookie_auth_samesite = "lax" # strict
 
 
 class PostgresConfig:
