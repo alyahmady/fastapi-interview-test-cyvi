@@ -1,9 +1,13 @@
 import os
 from pathlib import Path
 from typing import Literal
-
+from dotenv import load_dotenv
 
 class Config:
+    base_directory = Path(__file__).parent
+    if (base_directory.parent / ".env").exists():
+        load_dotenv(base_directory.parent / ".env", verbose=True, override=True)
+
     migrate_db_on_startup: bool = os.getenv("MIGRATE_DB_ON_STARTUP", "false") == "true"
 
     environment: Literal["development", "production"] = os.getenv("ENVIRONMENT")
