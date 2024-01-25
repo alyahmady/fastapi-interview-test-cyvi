@@ -14,9 +14,9 @@ from app.config import PostgresConfig, Config
 
 @lru_cache
 def calculate_pool_parameters(
-        max_connections=PostgresConfig.max_connections,
-        expected_load=PostgresConfig.concurrent_connections,
-        safety_factor=0.1,
+    max_connections=PostgresConfig.max_connections,
+    expected_load=PostgresConfig.concurrent_connections,
+    safety_factor=0.1,
 ) -> tuple[int, int]:
     """
     Calculates the pool_size and max_overflow parameters for SQLAlchemy.

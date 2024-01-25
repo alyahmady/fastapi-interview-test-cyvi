@@ -13,4 +13,3 @@ class CustomerSchema(BaseModel):
 
     first_name: constr(max_length=150) | None = None
     last_name: constr(max_length=150) | None = None
-

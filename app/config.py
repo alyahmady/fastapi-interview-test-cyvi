@@ -3,10 +3,11 @@ from pathlib import Path
 from typing import Literal
 from dotenv import load_dotenv
 
+
 class Config:
     base_directory = Path(__file__).parent
     if (base_directory.parent / ".env").exists():
-        load_dotenv(base_directory.parent / ".env", verbose=True, override=True)
+        load_dotenv(base_directory.parent / ".env", verbose=True, override=False)
 
     migrate_db_on_startup: bool = os.getenv("MIGRATE_DB_ON_STARTUP", "false") == "true"
 
@@ -18,6 +19,7 @@ class Config:
     # refresh_token_expiration_day = int(os.getenv("REFRESH_TOKEN_EXPIRATION_DAY", 7))
 
     time_zone = os.getenv("TIME_ZONE", "UTC")
+
 
 class PostgresConfig:
     user = os.getenv("POSTGRES_USER")

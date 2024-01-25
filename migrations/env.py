@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.config import PostgresConfig
 from app.models import Base
-from app.models import User, UserPrimaryKeySequence  # noqa: F401
+from app.models import User  # noqa: F401
 
 context_config = context.config
 if context_config.config_file_name is not None:
