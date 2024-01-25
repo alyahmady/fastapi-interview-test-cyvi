@@ -1,13 +1,16 @@
-<html lang="en">
-<head>
-    <title>Home</title>
-</head>
-<body>
-    <h1>Home</h1>
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block header_title %}
+    Home
+{% endblock %}
+
+{% block body %}
     <p>Welcome to the home page!</p>
     <br/>
     <a href="{{ url_for('customers_list') }}">
         Customers List
     </a>
-</body>
-</html>
+{% endblock %}

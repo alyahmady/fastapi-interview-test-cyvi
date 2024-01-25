@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - CYVI Test</title>
+    <style>
+        {% block styles %}{% endblock %}
+    </style>
+</head>
+<body>
+
+<h2>{% block message %}{% endblock %}</h2>
+<br/>
+<h1>{% block header_title %}{% endblock %}</h1>
+<br/>
+{% block body %}{% endblock %}
+
+</body>
+</html>

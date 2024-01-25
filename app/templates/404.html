@@ -1,9 +1,12 @@
-<html lang="en">
-<head>
-    <title>404 Not Found</title>
-</head>
-<body>
-    <h1>404 Not Found</h1>
+{% extends 'base.html' %}
+{% block title %}
+    404 Not Found
+{% endblock %}
+
+{% block header_title %}
+    404 Not Found
+{% endblock %}
+
+{% block body %}
     <a href="{{ url_for('home_page') }}">Return to home</a>
-</body>
-</html>
+{% endblock %}
