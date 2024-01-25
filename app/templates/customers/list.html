@@ -1,1 +1,65 @@
-{#With message in context for customer create or delete#}
+{% extends 'base.html' %}
+
+{% block title %}
+    Customer List
+{% endblock %}
+
+{% block styles %}
+    table, td, th {
+      border: 1px solid;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+{% endblock %}
+
+{% block message %}
+    {% if message %}
+        {{ message }}
+    {% endif %}
+{% endblock %}
+
+{% block header_title %}
+    Customer List
+{% endblock %}
+
+{% block body %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.first_name or '---' }} {{ customer.last_name or '---' }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone or '---' }}</td>
+                    <td><a href="{{ url_for('customer_update', customer_id=customer.id) }}">Update</a></td>
+                    <td><a href="{{ url_for('customer_delete', customer_id=customer.id) }}">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        {% if pages_count and pages_count > 1 %}
+            <p>Page {{ current_page }} of {{ pages_count }}</p>
+            <p>
+                {% if current_page > 1 %}
+                    <a href="?page={{ current_page - 1 }}&size={{ current_size or '' }}">Previous</a>
+                {% endif %}
+
+                {% if current_page < pages_count %}
+                    <a href="?page={{ current_page + 1 }}&size={{ current_size or '' }}">Next</a>
+                {% endif %}
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}
