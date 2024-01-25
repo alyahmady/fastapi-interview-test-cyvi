@@ -6,6 +6,7 @@ from mangum import Mangum
 from app.config import Config
 from app.db import db_migrate
 from app.package.base.routes import router as base_router
+from app.package.customers.routes import router as customers_router
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG if Config.is_development else logging.INFO)
@@ -16,5 +17,6 @@ if Config.migrate_db_on_startup:
 app = FastAPI(debug=Config.is_development)
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(base_router, prefix="")
+app.include_router(customers_router, prefix="/customers")
 
 lambda_handler = Mangum(app, lifespan="off")
