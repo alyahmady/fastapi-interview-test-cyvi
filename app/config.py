@@ -15,6 +15,7 @@ class Config:
     is_development: bool = environment == "development"
     is_production: bool = environment == "production"
 
+    unusable_password = "$#@!_DROWSSAP_ELBASUNU"
     access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
     # refresh_token_expiration_day = int(os.getenv("REFRESH_TOKEN_EXPIRATION_DAY", 7))
 

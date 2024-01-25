@@ -2,7 +2,12 @@ import inspect
 from typing import Type, Annotated
 
 from fastapi import Form
+from passlib.context import CryptContext
 from pydantic import BaseModel
+
+from app.config import Config
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def as_form(cls: Type[BaseModel]) -> Type[BaseModel]:
@@ -25,3 +30,11 @@ def as_form(cls: Type[BaseModel]) -> Type[BaseModel]:
 
     setattr(cls, "as_form", as_form_method)
     return cls
+
+
+async def get_unusable_password() -> str:
+    return pwd_context.hash(Config.unusable_password)
+
+
+async def verify_unusable_password(hashed_password: str) -> bool:
+    return pwd_context.verify(Config.unusable_password, hashed_password)

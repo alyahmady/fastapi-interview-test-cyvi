@@ -12,6 +12,7 @@ from app.db import get_db
 from app.enums import UserRole
 from app.models import User
 from app.package.customers.schemas import CustomerSchema
+from app.utils import get_unusable_password
 
 router = APIRouter()
 
@@ -82,7 +83,10 @@ async def customer_create_form(
 ):
     await db.execute(
         insert(User).values(
-            **customer.model_dump(), is_active=True, role=UserRole.CUSTOMER
+            **customer.model_dump(),
+            is_active=True,
+            role=UserRole.CUSTOMER,
+            hashed_password=get_unusable_password(),
         )
     )
     await db.commit()
