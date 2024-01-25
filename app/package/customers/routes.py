@@ -1,6 +1,6 @@
 from typing import Annotated, Iterable
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, status, Depends
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -8,6 +8,7 @@ from sqlalchemy import select, insert, update, true, CursorResult, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Config
+from app.db import get_db
 from app.enums import UserRole
 from app.models import User
 from app.package.customers.schemas import CustomerSchema
@@ -21,7 +22,7 @@ templates = Jinja2Templates(directory=Config.base_directory / "templates")
 async def customers_list(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     page: Annotated[int, Query(ge=1)] = 1,
     size: Annotated[int, Query(ge=0, le=50)] = 10,
 ):
@@ -40,7 +41,7 @@ async def customers_list(
 async def customer_detail(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     customer_id: int,
 ):
     customer: User = await db.scalar(
@@ -76,7 +77,7 @@ async def customer_create(
 async def customer_create_form(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     customer: CustomerSchema,
 ):
     await db.execute(
@@ -97,7 +98,7 @@ async def customer_create_form(
 async def customer_update(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     customer_id: int,
 ):
     customer: User = await db.scalar(
@@ -122,7 +123,7 @@ async def customer_update(
 async def customer_update_form(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     customer_id: int,
     customer: CustomerSchema,
 ):
@@ -158,7 +159,7 @@ async def customer_update_form(
 async def customer_delete(
     *,
     request: Request,
-    db: AsyncSession,
+    db: Annotated[AsyncSession, Depends(get_db)],
     customer_id: int,
 ):
     result: Result | CursorResult = await db.scalar(
