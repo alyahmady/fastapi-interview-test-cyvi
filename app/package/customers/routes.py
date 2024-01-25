@@ -7,13 +7,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import select, insert, update, true, CursorResult, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import Config
 from app.enums import UserRole
 from app.models import User
 from app.package.customers.schemas import CustomerSchema
 
 router = APIRouter()
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=Config.base_directory / "templates")
 
 
 @router.get("/", response_class=HTMLResponse)
