@@ -1,10 +1,11 @@
+import math
 from typing import Annotated, Iterable
 
 from fastapi import APIRouter, Query, status, Depends
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import select, insert, update, true, CursorResult, Result
+from sqlalchemy import select, insert, update, true, CursorResult, Result, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Config
@@ -30,11 +31,27 @@ async def customers_list(
     customers: Iterable[User] = await db.scalars(
         select(User)
         .where(User.is_active == true(), User.role == UserRole.CUSTOMER)
+        .order_by(User.created_at.desc())
         .offset((page - 1) * size)
         .limit(size)
     )
+
+    customers_count: int = await db.scalar(
+        select(func.count("*"))
+        .select_from(User)
+        .where(User.is_active == true(), User.role == UserRole.CUSTOMER)
+    )
+    pages_count = math.ceil(customers_count / size)
+
     return templates.TemplateResponse(
-        request=request, name="customers/list.html", context={"customers": customers}
+        request=request,
+        name="customers/list.html",
+        context={
+            "customers": customers,
+            "pages_count": pages_count,
+            "current_page": page,
+            "current_size": size,
+        },
     )
 
 
