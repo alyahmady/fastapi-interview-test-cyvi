@@ -1,8 +1,11 @@
 import os
+from pathlib import Path
 from typing import Literal
 
 
 class Config:
+    migrate_db_on_startup: bool = os.getenv("MIGRATE_DB_ON_STARTUP", "false") == "true"
+
     environment: Literal["development", "production"] = os.getenv("ENVIRONMENT")
     is_development: bool = environment == "development"
     is_production: bool = environment == "production"
@@ -11,7 +14,6 @@ class Config:
     # refresh_token_expiration_day = int(os.getenv("REFRESH_TOKEN_EXPIRATION_DAY", 7))
 
     time_zone = os.getenv("TIME_ZONE", "UTC")
-
 
 class PostgresConfig:
     user = os.getenv("POSTGRES_USER")
