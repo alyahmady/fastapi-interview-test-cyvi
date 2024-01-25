@@ -1,37 +1,27 @@
 import inspect
-from typing import Type
+from typing import Type, Annotated
 
 from fastapi import Form
 from pydantic import BaseModel
-from pydantic.fields import FieldInfo
 
 
-def as_form(cls: Type[BaseModel]):
-    new_parameters = []
-
-    for _, field in cls.model_fields.items():
-        field: FieldInfo
-
-        default_value = Form(field.default)
-        if field.is_required():
-            default_value = Form(...)
-
-        new_parameters.append(
-            inspect.Parameter(
-                field.alias,
-                inspect.Parameter.POSITIONAL_ONLY,
-                default=default_value,
-                annotation=field.annotation,
-            )
+def as_form(cls: Type[BaseModel]) -> Type[BaseModel]:
+    new_parameters = [
+        inspect.Parameter(
+            model_field.alias or field_name,
+            inspect.Parameter.POSITIONAL_ONLY,
+            default=model_field.default,
+            annotation=Annotated[model_field.annotation, *model_field.metadata, Form()],
         )
+        for field_name, model_field in cls.model_fields.items()
+    ]
 
-    async def as_form_func(**data):
+    async def as_form_method(**data):
         return cls(**data)
 
-    sig = inspect.signature(as_form_func)
-    sig = sig.replace(parameters=new_parameters)
-    as_form_func.__signature__ = sig
+    model_as_form_signature = inspect.signature(as_form_method)
+    model_as_form_signature = model_as_form_signature.replace(parameters=new_parameters)
+    as_form_method.__signature__ = model_as_form_signature
 
-    setattr(cls, "as_form", as_form_func)
-
+    setattr(cls, "as_form", as_form_method)
     return cls
