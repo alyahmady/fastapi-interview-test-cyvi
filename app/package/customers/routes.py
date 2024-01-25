@@ -72,7 +72,7 @@ async def customer_detail(
     if not customer:
         return templates.TemplateResponse(
             request=request,
-            name="customer_detail.html",
+            name="customers/detail.html",
             context={"customer": None},
             status_code=404,
         )
