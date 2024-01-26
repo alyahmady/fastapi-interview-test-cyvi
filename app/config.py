@@ -49,6 +49,9 @@ class AuthConfig:
     jwt_issuer = "TEST"
     jwt_age_seconds = 60 * 60 * 24 * 7  # 7 days
 
+    create_admin_on_startup: bool = (
+        os.getenv("CREATE_ADMIN_ON_STARTUP", "false") == "true"
+    )
     admin_username: str = os.getenv("ADMIN_USERNAME")
     admin_email: str = os.getenv("ADMIN_EMAIL")
     admin_password: str = os.getenv("ADMIN_PASSWORD")

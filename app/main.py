@@ -3,7 +3,8 @@ import logging
 from fastapi import FastAPI
 from mangum import Mangum
 
-from app.config import Config
+from app.auth import Admin
+from app.config import Config, AuthConfig
 from app.db import db_migrate
 from app.package.base.routes import router as base_router
 from app.package.customers.routes import router as customers_router
@@ -13,6 +14,9 @@ logger.setLevel(logging.DEBUG if Config.is_development else logging.INFO)
 
 if Config.migrate_db_on_startup:
     db_migrate()
+
+if AuthConfig.create_admin_on_startup:
+    Admin.create()
 
 app = FastAPI(debug=Config.is_development)
 # app.mount("/static", StaticFiles(directory="static"), name="static")
