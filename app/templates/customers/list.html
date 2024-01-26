@@ -15,6 +15,10 @@
     }
 {% endblock %}
 
+{% block nav_links %}
+    <a href="{{ url_for('home_page') }}">Return to Home</a>
+{% endblock %}
+
 {% block header_title %}
     Customer List
 {% endblock %}
@@ -26,6 +30,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                <th> </th>
                 <th> </th>
             </tr>
         </thead>
