@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Literal
+
 from dotenv import load_dotenv
 
 
@@ -15,18 +16,7 @@ class Config:
     is_development: bool = environment == "development"
     is_production: bool = environment == "production"
 
-    unusable_password = "$#@!_DROWSSAP_ELBASUNU"
-    access_token_expire_minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-    # refresh_token_expiration_day = int(os.getenv("REFRESH_TOKEN_EXPIRATION_DAY", 7))
-
     time_zone = os.getenv("TIME_ZONE", "UTC")
-    auth_secret_key = os.getenv("AUTH_SECRET_KEY")
-
-    cookie_auth_key = "jwtauth"
-    cookie_auth_max_age = 60 * 60 * 24 * 7  # 7 days
-    cookie_auth_secure = True
-    cookie_auth_httponly = True
-    cookie_auth_samesite = "lax" # strict
 
 
 class PostgresConfig:
@@ -42,3 +32,23 @@ class PostgresConfig:
     )
 
     database_url = f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}"
+
+
+class AuthConfig:
+    secret_key = os.getenv("AUTH_SECRET_KEY")
+
+    unusable_password_prefix = "UNUSABLE_PASSWORD_"
+
+    cookie_auth_key = "jwtauth"
+    cookie_auth_secure = True
+    cookie_auth_httponly = True
+    cookie_auth_samesite = "strict"
+
+    jwt_algorithm = "HS256"
+    jwt_audience = "TEST"
+    jwt_issuer = "TEST"
+    jwt_age_seconds = 60 * 60 * 24 * 7  # 7 days
+
+    admin_username: str = os.getenv("ADMIN_USERNAME")
+    admin_email: str = os.getenv("ADMIN_EMAIL")
+    admin_password: str = os.getenv("ADMIN_PASSWORD")
