@@ -29,7 +29,6 @@ async def admin_login(*, request: Request, message: Annotated[str, Query] = None
 async def admin_login_form(
     *,
     request: Request,
-    response: Response,
     db: Annotated[AsyncSession, Depends(get_db)],
     username: Annotated[str, Form(max_length=50)],
     password: Annotated[str, Form(min_length=8)],
@@ -59,6 +58,13 @@ async def admin_login_form(
             status_code=status.HTTP_302_FOUND
         )
 
+
+    response = RedirectResponse(
+        url=request.url_for("home_page").include_query_params(
+            message="Logged in successfully"
+        ),
+        status_code=status.HTTP_302_FOUND
+    )
     response.set_cookie(
         key=AuthConfig.cookie_auth_key,
         value=await JWT.for_user(user_id=admin.id, user_role=admin.role),
@@ -68,3 +74,5 @@ async def admin_login_form(
         httponly=AuthConfig.cookie_auth_httponly,
     )
     return RedirectResponse(url=request.url_for("home"))
+    return response
+
