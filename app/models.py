@@ -5,8 +5,8 @@ from sqlalchemy import (
     DateTime,
     func,
     Boolean,
-    text,
     BigInteger,
+    true,
 )
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.ext.asyncio import AsyncAttrs
@@ -41,7 +41,7 @@ class User(Base):
         default=UserRole.CUSTOMER,
     )
     is_active: Mapped[bool] = mapped_column(
-        Boolean, nullable=False, server_default=text("TRUE")
+        Boolean, nullable=False, server_default=true()
     )
 
     created_at: Mapped[datetime.datetime] = mapped_column(
