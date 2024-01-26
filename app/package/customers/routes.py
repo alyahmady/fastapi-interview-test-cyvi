@@ -96,8 +96,20 @@ async def customer_create_form(
     *,
     request: Request,
     db: Annotated[AsyncSession, Depends(get_db)],
-    customer: CustomerSchema,
+    email: Annotated[str, Form()] = ...,
+    username: Annotated[str | None, Form(max_length=50)] = None,
+    phone: Annotated[str | None, Form(max_length=15)] = None,
+    first_name: Annotated[str | None, Form(max_length=150)] = None,
+    last_name: Annotated[str | None, Form(max_length=150)] = None,
 ):
+    customer = CustomerSchema(
+        email=email,
+        username=username,
+        phone=phone,
+        first_name=first_name,
+        last_name=last_name,
+    )
+
     await db.execute(
         insert(User).values(
             **customer.model_dump(),
@@ -146,8 +158,20 @@ async def customer_update_form(
     request: Request,
     db: Annotated[AsyncSession, Depends(get_db)],
     customer_id: int,
-    customer: CustomerSchema,
+    email: Annotated[str, Form()] = ...,
+    username: Annotated[str | None, Form(max_length=50)] = None,
+    phone: Annotated[str | None, Form(max_length=15)] = None,
+    first_name: Annotated[str | None, Form(max_length=150)] = None,
+    last_name: Annotated[str | None, Form(max_length=150)] = None,
 ):
+    customer = CustomerSchema(
+        email=email,
+        username=username,
+        phone=phone,
+        first_name=first_name,
+        last_name=last_name,
+    )
+
     updated_customer: User = await db.scalar(
         update(User)
         .returning(User)

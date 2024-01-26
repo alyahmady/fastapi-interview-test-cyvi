@@ -12,7 +12,6 @@ from app.config import Config, AuthConfig
 from app.db import get_db
 from app.enums import UserRole
 from app.models import User
-from app.package.admin.schemas import LoginSchema
 
 router = APIRouter()
 
@@ -32,13 +31,14 @@ async def admin_login_form(
     request: Request,
     response: Response,
     db: Annotated[AsyncSession, Depends(get_db)],
-    auth: LoginSchema,
+    username: Annotated[str, Form(max_length=50)],
+    password: Annotated[str, Form(min_length=8)],
 ):
     admin: User = await db.scalar(
         select(User).where(
             User.is_active == true(),
             User.role == UserRole.ADMIN,
-            User.username == auth.username,
+            User.username == username,
         )
     )
     if not admin:
@@ -49,7 +49,7 @@ async def admin_login_form(
         )
 
     if not await Password.verify_hashed(
-        raw_password=auth.password, hashed_password=admin.hashed_password
+        raw_password=password, hashed_password=admin.hashed_password
     ):
         return RedirectResponse(
             url=request.url_for("admin_login").include_query_params(
