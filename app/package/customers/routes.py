@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import select, insert, update, true, CursorResult, Result, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth import Password
+from app.auth import Password, Admin
 from app.config import Config
 from app.db import get_db
 from app.enums import UserRole
@@ -20,7 +20,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=Config.base_directory / "templates")
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse, dependencies=[Depends(Admin.required)])
 async def customers_list(
     *,
     request: Request,
@@ -55,7 +55,11 @@ async def customers_list(
     )
 
 
-@router.get("/{customer_id}/", response_class=HTMLResponse)
+@router.get(
+    "/{customer_id}/",
+    response_class=HTMLResponse,
+    dependencies=[Depends(Admin.required)],
+)
 async def customer_detail(
     *,
     request: Request,
@@ -81,7 +85,9 @@ async def customer_detail(
     )
 
 
-@router.get("/create/", response_class=HTMLResponse)
+@router.get(
+    "/create/", response_class=HTMLResponse, dependencies=[Depends(Admin.required)]
+)
 async def customer_create(
     *,
     request: Request,
@@ -91,7 +97,9 @@ async def customer_create(
     )
 
 
-@router.post("/create/", response_class=HTMLResponse)
+@router.post(
+    "/create/", response_class=HTMLResponse, dependencies=[Depends(Admin.required)]
+)
 async def customer_create_form(
     *,
     request: Request,
@@ -127,7 +135,11 @@ async def customer_create_form(
     )
 
 
-@router.get("/{customer_id}/update/", response_class=HTMLResponse)
+@router.get(
+    "/{customer_id}/update/",
+    response_class=HTMLResponse,
+    dependencies=[Depends(Admin.required)],
+)
 async def customer_update(
     *,
     request: Request,
@@ -152,7 +164,11 @@ async def customer_update(
     )
 
 
-@router.put("/{customer_id}/update/", response_class=HTMLResponse)
+@router.put(
+    "/{customer_id}/update/",
+    response_class=HTMLResponse,
+    dependencies=[Depends(Admin.required)],
+)
 async def customer_update_form(
     *,
     request: Request,
@@ -200,7 +216,11 @@ async def customer_update_form(
     )
 
 
-@router.delete("/{customer_id}/delete/", response_class=HTMLResponse)
+@router.delete(
+    "/{customer_id}/delete/",
+    response_class=HTMLResponse,
+    dependencies=[Depends(Admin.required)],
+)
 async def customer_delete(
     *,
     request: Request,
