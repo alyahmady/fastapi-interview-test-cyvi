@@ -7,12 +7,12 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import Config
+from app.auth import Password, JWT
+from app.config import Config, AuthConfig
 from app.db import get_db
 from app.enums import UserRole
 from app.models import User
 from app.package.admin.schemas import LoginSchema
-from app.utils import verify_hashed_password, get_user_jwt
 
 router = APIRouter()
 
@@ -48,7 +48,9 @@ async def admin_login_form(
             )
         )
 
-    if not verify_hashed_password(auth.password):
+    if not await Password.verify_hashed(
+        raw_password=auth.password, hashed_password=admin.hashed_password
+    ):
         return RedirectResponse(
             url=request.url_for("admin_login").include_query_params(
                 message="Password is incorrect"
@@ -56,12 +58,11 @@ async def admin_login_form(
         )
 
     response.set_cookie(
-        key=Config.cookie_auth_key,
-        value=await get_user_jwt(admin.id, admin.role),
-        max_age=Config.cookie_auth_max_age,
-        samesite=Config.cookie_auth_samesite,
-        secure=Config.cookie_auth_secure,
-        httponly=Config.cookie_auth_httponly,
+        key=AuthConfig.cookie_auth_key,
+        value=await JWT.for_user(user_id=admin.id, user_role=admin.role),
+        max_age=AuthConfig.jwt_age_seconds,
+        samesite=AuthConfig.cookie_auth_samesite,
+        secure=AuthConfig.cookie_auth_secure,
+        httponly=AuthConfig.cookie_auth_httponly,
     )
-
     return RedirectResponse(url=request.url_for("home"))

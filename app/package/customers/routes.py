@@ -8,12 +8,12 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import select, insert, update, true, CursorResult, Result, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth import Password
 from app.config import Config
 from app.db import get_db
 from app.enums import UserRole
 from app.models import User
 from app.package.customers.schemas import CustomerSchema
-from app.utils import get_unusable_password
 
 router = APIRouter()
 
@@ -103,7 +103,7 @@ async def customer_create_form(
             **customer.model_dump(),
             is_active=True,
             role=UserRole.CUSTOMER,
-            hashed_password=get_unusable_password(),
+            hashed_password=await Password.get_unusable(),
         )
     )
     await db.commit()
