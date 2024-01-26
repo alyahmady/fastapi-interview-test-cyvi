@@ -12,7 +12,9 @@ class Config:
 
     migrate_db_on_startup: bool = os.getenv("MIGRATE_DB_ON_STARTUP", "false") == "true"
 
-    environment: Literal["development", "production"] = os.getenv("ENVIRONMENT")
+    environment: Literal["development", "production"] = (
+        os.getenv("ENVIRONMENT").lower().strip()
+    )
     is_development: bool = environment == "development"
     is_production: bool = environment == "production"
 
