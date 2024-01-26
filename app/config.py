@@ -42,9 +42,13 @@ class AuthConfig:
     unusable_password_prefix = "UNUSABLE_PASSWORD_"
 
     cookie_auth_key = "jwtauth"
-    cookie_auth_secure = True
-    cookie_auth_httponly = True
-    cookie_auth_samesite = "strict"
+    cookie_auth_secure = bool_env("COOKIE_SECURE", "true")
+    cookie_auth_httponly = (
+        bool_env("COOKIE_HTTPONLY", "true")
+    )
+    cookie_auth_samesite: Literal["lax", "strict"] = (
+        os.getenv("COOKIE_SAMESITE", "strict").lower().strip()
+    )
 
     jwt_algorithm = "HS256"
     jwt_audience = "TEST"
