@@ -73,6 +73,13 @@ async def admin_login_form(
         secure=AuthConfig.cookie_auth_secure,
         httponly=AuthConfig.cookie_auth_httponly,
     )
-    return RedirectResponse(url=request.url_for("home"))
     return response
 
+
+@router.post("/logout/", response_class=HTMLResponse)
+async def admin_logout(*, request: Request, response: Response):
+    response = RedirectResponse(
+        url=request.url_for("home_page").include_query_params(message="Logged out successfully"), status_code=status.HTTP_302_FOUND
+    )
+    response.delete_cookie(AuthConfig.cookie_auth_key)
+    return response
