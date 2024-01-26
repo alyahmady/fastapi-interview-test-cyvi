@@ -153,11 +153,12 @@ class Admin:
                         is_active=True,
                     )
                     .on_conflict_do_update(
-                        index_elements=[User.username, User.email],
+                        index_elements=[User.email],
                         set_=dict(
                             hashed_password=await Password.get_hashed(
                                 AuthConfig.admin_password
                             ),
+                            username=AuthConfig.admin_username,
                         ),
                     )
                 )
