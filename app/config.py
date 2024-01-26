@@ -5,12 +5,16 @@ from typing import Literal
 from dotenv import load_dotenv
 
 
+def bool_env(env_var, default) -> bool:
+    return os.getenv(env_var, default).lower().strip() == "true"
+
+
 class Config:
     base_directory = Path(__file__).parent
     if (base_directory.parent / ".env").exists():
         load_dotenv(base_directory.parent / ".env", verbose=True, override=False)
 
-    migrate_db_on_startup: bool = os.getenv("MIGRATE_DB_ON_STARTUP", "false") == "true"
+    migrate_db_on_startup = bool_env("MIGRATE_DB_ON_STARTUP", "false")
 
     environment: Literal["development", "production"] = (
         os.getenv("ENVIRONMENT").lower().strip()
@@ -55,9 +59,7 @@ class AuthConfig:
     jwt_issuer = "TEST"
     jwt_age_seconds = 60 * 60 * 24 * 7  # 7 days
 
-    create_admin_on_startup: bool = (
-        os.getenv("CREATE_ADMIN_ON_STARTUP", "false") == "true"
-    )
+    create_admin_on_startup = bool_env("CREATE_ADMIN_ON_STARTUP", "false")
     admin_username: str = os.getenv("ADMIN_USERNAME")
     admin_email: str = os.getenv("ADMIN_EMAIL")
     admin_password: str = os.getenv("ADMIN_PASSWORD")
