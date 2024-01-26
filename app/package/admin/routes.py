@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Form, status
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory=Config.base_directory / "templates")
 
 
 @router.get("/login/", response_class=HTMLResponse)
-async def admin_login(*, request: Request, message: Annotated[str, Query(None)]):
+async def admin_login(*, request: Request, message: Annotated[str, Query] = None):
     return templates.TemplateResponse(
         request=request, name="admin/login.html", context={"message": message}
     )
@@ -45,7 +45,8 @@ async def admin_login_form(
         return RedirectResponse(
             url=request.url_for("admin_login").include_query_params(
                 message="User not found"
-            )
+            ),
+            status_code=status.HTTP_302_FOUND
         )
 
     if not await Password.verify_hashed(
@@ -54,7 +55,8 @@ async def admin_login_form(
         return RedirectResponse(
             url=request.url_for("admin_login").include_query_params(
                 message="Password is incorrect"
-            )
+            ),
+            status_code=status.HTTP_302_FOUND
         )
 
     response.set_cookie(
