@@ -7,6 +7,5 @@ from app.utils import as_form
 class LoginSchema(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    username: constr(max_length=50) | None = None
-    password: constr(min_length=8) | None = None
-    # remember_me: bool = False
+    username: constr(max_length=50)
+    password: constr(min_length=8)
